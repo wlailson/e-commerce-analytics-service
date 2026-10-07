@@ -33,18 +33,11 @@ public class AnalyticsController {
     @Operation(
             summary = "Lista as vendas",
             description = "Retorna as vendas registradas em páginas. `page` começa em zero, `size` define o "
-                    + "tamanho da página e `sort` aceita o campo e a direção da ordenação."
+                    + "tamanho da página e `sort` aceita o campo e a direção da ordenação. Valores inválidos "
+                    + "de paginação usam os valores padrão do Spring Data."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Página de vendas retornada."),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Parâmetros de paginação inválidos.",
-                    content = @Content(
-                            mediaType = "application/problem+json",
-                            schema = @Schema(implementation = ProblemDetail.class)
-                    )
-            ),
             @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido."),
             @ApiResponse(responseCode = "403", description = "Acesso não permitido."),
             @ApiResponse(
