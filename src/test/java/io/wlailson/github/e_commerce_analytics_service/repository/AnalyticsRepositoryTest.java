@@ -24,7 +24,7 @@ class AnalyticsRepositoryTest {
     @Container
     @ServiceConnection
     static final MongoDBContainer mongoDBContainer =
-            new MongoDBContainer(DockerImageName.parse("mongo:7.0"));
+            new MongoDBContainer(DockerImageName.parse("mongo:8.2"));
 
     @Autowired
     private AnalyticsRepository repository;
