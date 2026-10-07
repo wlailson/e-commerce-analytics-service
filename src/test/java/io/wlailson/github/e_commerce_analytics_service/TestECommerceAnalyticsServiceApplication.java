@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 public class TestECommerceAnalyticsServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.from(ECommerceAnalyticsServiceApplication::main).with(TestcontainersConfiguration.class).run(args);
+		SpringApplication.from(Application::main).with(TestcontainersConfiguration.class).run(args);
 	}
 
 }

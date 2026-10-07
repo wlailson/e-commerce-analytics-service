@@ -1,3 +1,51 @@
 spring:
   application:
-    name: e-commerce-analytics-service
+    name: Analytics Service
+
+  profiles:
+    active:
+      - ${APP_PROFILE:dev}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:analytics-group}
+      auto-offset-reset: ${KAFKA_AUTO_OFFSET_RESET:earliest}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      topics:
+        orderCreated: ${KAFKA_TOPIC_ORDER_CREATED:${KAFKA_TOPIC_CREATED:order-created-event}}
+        orderUpdated: ${KAFKA_TOPIC_ORDER_UPDATED:order-updated-event}
+        paymentCreated: ${KAFKA_TOPIC_PAYMENT_CREATED:payment-created-event}
+        analyticsUpdated: ${KAFKA_TOPIC_UPDATED:analytics-updated-event}
+    listener:
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:1}
+
+cors:
+  origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:8080}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  metrics:
+    tags:
+      application: prometheus-grafana
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
+          - logfile
+
+  endpoint:
+    health:
+      show-details: always
