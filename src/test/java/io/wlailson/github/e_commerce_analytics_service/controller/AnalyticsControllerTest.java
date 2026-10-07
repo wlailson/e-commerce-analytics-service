@@ -80,14 +80,17 @@ class AnalyticsControllerTest {
     }
 
     @Test
-    void invalidPageParameterReturnsBadRequestProblemDetail() throws Exception {
+    void invalidPageParameterUsesDefaultPagination() throws Exception {
+        PageRequest defaultPageable = PageRequest.of(0, 20);
+        when(service.getSales(defaultPageable)).thenReturn(Page.empty(defaultPageable));
+
         mockMvc.perform(get("/analytics/sales").param("page", "not-a-number"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.title").value("Requisição inválida"))
-                .andExpect(jsonPath("$.detail").value("Verifique o formato e os parâmetros enviados."))
-                .andExpect(jsonPath("$.instance").value("/analytics/sales"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(20));
+
+        verify(service).getSales(defaultPageable);
     }
 
     @Test
