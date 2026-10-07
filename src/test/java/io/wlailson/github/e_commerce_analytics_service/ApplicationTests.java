@@ -16,12 +16,12 @@ class ApplicationTests {
 	@Container
 	@ServiceConnection
 	static final KafkaContainer kafkaContainer =
-			new KafkaContainer(DockerImageName.parse("apache/kafka-native:latest"));
+			new KafkaContainer(DockerImageName.parse("apache/kafka-native:4.2.1"));
 
 	@Container
 	@ServiceConnection
 	static final MongoDBContainer mongoDbContainer =
-			new MongoDBContainer(DockerImageName.parse("mongo:7.0"));
+			new MongoDBContainer(DockerImageName.parse("mongo:8.2"));
 
 	@Test
 	void contextLoads() {

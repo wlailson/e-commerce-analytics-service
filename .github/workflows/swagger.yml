@@ -30,7 +30,7 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: wlailson
           MONGO_INITDB_DATABASE: dev_analytics_db
         options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-cmd "mongosh --quiet --username \"$MONGO_INITDB_ROOT_USERNAME\" --password \"$MONGO_INITDB_ROOT_PASSWORD\" --authenticationDatabase admin --eval 'db.adminCommand({ ping: 1 }).ok'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
