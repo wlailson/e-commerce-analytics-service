@@ -20,7 +20,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,5 +77,30 @@ class AnalyticsControllerTest {
                 .andExpect(jsonPath("$.salesByStatus[0].total").value(2));
 
         verify(service).getDashboard();
+    }
+
+    @Test
+    void invalidPageParameterReturnsBadRequestProblemDetail() throws Exception {
+        mockMvc.perform(get("/analytics/sales").param("page", "not-a-number"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.title").value("Requisição inválida"))
+                .andExpect(jsonPath("$.detail").value("Verifique o formato e os parâmetros enviados."))
+                .andExpect(jsonPath("$.instance").value("/analytics/sales"));
+    }
+
+    @Test
+    void unexpectedFailureReturnsGenericInternalServerProblemDetail() throws Exception {
+        when(service.getDashboard()).thenThrow(new IllegalStateException("internal database details"));
+
+        mockMvc.perform(get("/analytics/dashboard"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.title").value("Erro interno"))
+                .andExpect(jsonPath("$.detail")
+                        .value("Ocorreu um erro inesperado ao processar a requisição."))
+                .andExpect(jsonPath("$.instance").value("/analytics/dashboard"));
     }
 }
